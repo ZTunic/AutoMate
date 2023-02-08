@@ -1,0 +1,34 @@
+\chapter{Definizione del problema}
+\section{Obiettivi}
+L'obiettivo fondamentale di AutoMate è quello di realizzare un'applicazione Desktop che gli utenti possono utilizzare per stimare il valore di un'auto usata, fornendo in input le informazioni di quest'ultima (ad esempio marca, modello, chilometraggio, ecc.). La predizione viene effettuata sulla base di un \textbf{Dataset} contenente circa 38000 istanze di inserzioni caricate su eBay Kleinanzeigen (versione tedesca di eBay Annunci), raccolte nel 2016.
+\medskip
+\section{Specifica PEAS}
+Un ambiente viene generalmente descritto tramite la formulazione PEAS, ovvero 
+Performance, Environment, Actuators, Sensors.
+\paragraph{Performance.} Fa riferimento alla misura di prestazione adottata per valutare l'operato dell'agente. Nel nostro caso, la misura di prestazione è data dall'accuratezza della predizione rispetto al valore reale dell'auto.
+\paragraph{Environment.} Descrizione degli elementi che formano l'ambiente. Nel nostro caso l'ambiente è costituito dagli utenti che utilizzano l'applicazione e dall'insieme di auto e le loro caratteristiche.
+\paragraph{Actuators.} Gli attuatori disponibili all'agente per intraprendere le azioni. Nel nostro caso l'attuatore corrisponde ad uno schermo utilizzato per mostrare il valore della predizione all'utente.
+\paragraph{Sensors.} I sensori attraverso i quali riceve gli input percettivi. Nel nostro caso il sensore è rappresentato da un Form compilato dall'utente grazie ad una tastiera.
+\subsection{Caratteristiche dell'ambiente}
+Di seguito sono elencate le caratteristiche principali dell'ambiente:
+\begin{itemize}
+    \item \textbf{Completamente osservabile}: in ogni momento si ha una completa conoscenza dello stato dell'ambiente.
+    \item \textbf{Deterministico}: lo stato successivo dell’ambiente è completamente determinato dallo stato corrente e dall’azione eseguita dall’agente.
+    \item \textbf{Episodico}: l'agente sceglie le proprie azioni indipendentemente dalle scelte prese in "episodi" precedenti.
+    \item \textbf{Statico}: l'ambiente in cui l'agente opera non cambia nel tempo.
+    \item \textbf{Discreto}: l'ambiente fornisce un numero limitato di percezioni e azioni distinte, chiaramente definite.
+    \item \textbf{Singolo Agente}: l'ambiente è costituito da un unico agente.
+\end{itemize}
+
+\medskip
+\section{Possibili soluzioni}
+Analizzando le caratteristiche del problema, emergono alcune informazioni utili alla sua comprensione.
+
+In primo luogo lo scopo dell'agente è quello di predire un valore definito in un insieme continuo. Questo dettaglio mette in evidenza la natura del problema: si tratta infatti di un problema di regressione.
+Un'altra caratteristica rilevante è che la predizione verrà effettuata sulla base di molteplici proprietà dell'auto: si deduce quindi che la regressione è multipla.
+
+In riferimento a queste considerazioni risulta quindi evidente che la soluzione più conveniente sia quella di modellare un agente capace di apprendere, e in particolare un regressore, dato che il loro scopo è proprio quello di risolvere problemi di questo tipo,
+
+\medskip
+\section{Problematiche del Dataset}
+Per il problema in esame è stata riscontrata un'elevata carenza di Dataset utili alla sua risoluzione. Per questo motivo è stato selezionato un Dataset che, nonostante sia adatto per il raggiungimento degli obiettivi del progetto, contiene dati risalenti al 2016 che rendono il modello di Machine Learning non attuale. È importante notare quindi che i risultati prodotti da AutoMate non sono una stima corretta del valore reale di un'auto rispetto alla situazione corrente del mercato.
