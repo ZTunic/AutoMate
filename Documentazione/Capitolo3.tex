@@ -1,0 +1,77 @@
+\chapter{Metodologie di sviluppo}
+
+\section{Ingegneria del Machine Learning}
+Approcciarsi allo sviluppo di un progetto senza preoccuparsi della sua ingegnerizzazione è uno degli errori più comuni e pericolosi dello sviluppo del Software. Senza una precisa metodologia, infatti, risulta quasi impossibile realizzare un sistema software affidabile o che riesca a fornire le corrette funzionalità agli utenti. È quindi di fondamentale importanza scegliere e seguire un modello di sviluppo del software per evitare (o mitigare) questo tipo di problematiche.
+
+\subsection{Il CRISP-DM}
+Quanto detto vale per lo sviluppo di qualunque tipo di software. Tuttavia la realizzazione di un modello di Machine Learning introduce nuove problematiche di cui tenere conto. In particolare, a differenza dei sistemi software tradizionali, nel Machine Learning si fa uso di grandi quantità di dati ed è quindi cruciale preoccuparsi della loro qualità e gestione.
+
+Di conseguenza sono due le cose principali a cui pensare quando si progetta una soluzione basata su Machine Learning: Ingegneria del Software e Ingegneria dei Dati.
+
+Per questi motivi, il modello scelto per progettare AutoMate è il \mbox{CRISP-DM} (Cross-Industry Standard Process for Data Mining), un modello non sequenziale in cui le diverse fasi possono essere eseguite un numero illimitato di volte e che prevede sia i tradizionali processi di Software Engineering che quelli di Data Engineering.
+
+\medskip
+\pagebreak
+\section{Risoluzione del problema}
+Come precedentemente specificato, lo sviluppo del progetto seguirà il modello CRISP-DM. Di seguito sono riportate le fasi del modello, e per ciascuna di esse sono state dettagliatamente descritte le scelte e le operazioni effettuate per raggiungere con successo gli obiettivi prefissati.
+
+\subsection{Business Understanding}
+La fase di \textbf{Business Understanding} prevede, come tutte le fasi iniziali di un progetto software, attività di raccolta dei requisiti e definizione degli obiettivi di business che si intende raggiungere. Inoltre è necessario determinare la disponibilità delle risorse, stimare i rischi e selezionare le tecnologie e i tool necessari al raggiungimento degli obiettivi.
+
+\paragraph{Obiettivi di business.}
+AutoMate ha come obiettivo principe quello di conferire ai suoi utilizzatori uno strumento che sia in grado di stimare il valore di un'auto tenendo conto sia di caratteristiche più generali come marca e modello, sia di informazioni più specifiche come tipo di trasmissione, potenza e presenza di danni e/o difetti.
+
+\paragraph{Disponibilità delle risorse.}
+Come già discusso nella \hyperref[sec:problematicheDataset]{\textbf{Sezione 2.4}}
+la bassa disponibilità di Dataset ha portato alla selezione di un insieme di dati non molto recente (i dati sono stati estratti nel 2016). Ciò non rappresenta un grosso problema dal punto di vista della realizzazione del modello poiché la struttura di un ideale Dataset più recente sarebbe abbastanza simile. Tuttavia ciò comporta un certo grado di inattualità che compromette l'utilizzo efficace di AutoMate in tempi odierni.
+
+\paragraph{Stima dei rischi.}
+Tra i possibili rischi che si potrebbero presentare è opportuno prestare particolare attenzione alle caratteristiche su cui la predizione sarà effettuata. Se non accuratamente selezionate, le features utilizzate per stimare il valore dell'auto potrebbero portare a risultati non corretti o comunque molto distanti dalla realtà.
+
+\paragraph{Tecnologie e tool utilizzati.}
+Per lo sviluppo del modello e le operazioni di acquisizione, analisi e modellazione dei dati verrà utilizzato il linguaggio \textbf{Python} e nello specifico le librerie \textbf{pandas} e \textbf{Scikit-learn}.
+\pagebreak
+
+\subsection{Data Understanding}
+La fase di \textbf{Data Understanding} si compone delle operazioni di identificazione, collezione e analisi dei Dataset che possono portare al raggiungimento degli obiettivi. Vengono infine identificati e discussi possibili problemi di qualità dei dati.
+
+\paragraph{Identificazione e Collezione dei Dataset.}
+Il Dataset selezionato per la risoluzione del problema è stato recuperato da \textbf{Kaggle}, una delle piattaforme più utilizzate nei campi della Data Science e del Machine Learning. Il Dataset è reperibile a questo link:
+\textit{\url{https://www.kaggle.com/datasets/shaunoilund/auto-sales-ebay-germany-random-50k-cleaned}} %Rendere il link blu
+
+\paragraph{Analisi dei Dataset.}
+Il Dataset utilizzato contiene oltre 37.000 inserzioni di auto caricate su eBay Kleinanzeigan da utenti privati ed è rappresentato da un file in formato .csv (Comma-Separeted Values) all'interno del quale ogni record è descritto da valori separati da virgola.
+
+Il Dataset presenta 18 campi, i quali vengono riportati di seguito con una breve descrizione:
+
+\begin{itemize}
+    \item \textbf{id}: identificativo dell'inserzione;
+    \item \textbf{data\textunderscore crawled}: data di estrazione dell'inserzione.
+    \item \textbf{car\textunderscore name}: testo dell'inserzione.
+    \item \textbf{price\textunderscore EUR}: prezzo dell'auto in euro.
+    \item \textbf{ab \textunderscore test}: se l'inserzione è inclusa in un test A/B.
+    \item \textbf{vehicle\textunderscore type}: tipo di veicolo.
+    \item \textbf{registration\textunderscore year}: anno di immatricolazione del veicolo.
+    \item \textbf{transmission}: tipo di trasmissione dell'auto.
+    \item \textbf{power\textunderscore ps}: potenza dell'auto in Pferdestärke (unità di misura simile agli HP).
+    \item \textbf{model}: modello dell'auto. 
+    \item \textbf{odometer\textunderscore km}: chilometraggio dell'auto.
+    \item\textbf{registration\textunderscore month}: mese di immatricolazione del veicolo.
+    \item \textbf{fuel\textunderscore type}: tipo di carburante dell'auto.
+    \item \textbf{brand}: marca dell'auto.
+    \item \textbf{unrepaired\textunderscore damage}: presenza di danni non riparati all'auto.
+    \item \textbf{date\textunderscore created}: data di creazione dell'inserzione.
+    \item \textbf{postal\textunderscore code}: codice postale della locazione dell'auto.
+    \item \textbf{last\textunderscore seen\textunderscore online}: data dell'ultima visita da parte del crawler.
+\end{itemize}
+
+\paragraph{Possibili problemi di qualità.}
+
+
+\subsection{Data Preparation}
+
+\subsection{Data Modeling}
+
+\subsection{Evaluation}
+
+\subsection{Deployment}

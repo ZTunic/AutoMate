@@ -1,6 +1,6 @@
 \chapter{Definizione del problema}
 \section{Obiettivi}
-L'obiettivo fondamentale di AutoMate è quello di realizzare un'applicazione Desktop che gli utenti possono utilizzare per stimare il valore di un'auto usata, fornendo in input le informazioni di quest'ultima (ad esempio marca, modello, chilometraggio, ecc.). La predizione viene effettuata sulla base di un \textbf{Dataset} contenente circa 38000 istanze di inserzioni caricate su eBay Kleinanzeigen (versione tedesca di eBay Annunci), raccolte nel 2016.
+L'obiettivo fondamentale di AutoMate è quello di realizzare un'applicazione Desktop che gli utenti possono utilizzare per stimare il valore di un'auto usata, fornendo in input le informazioni di quest'ultima (ad esempio marca, modello, chilometraggio, ecc.). La predizione viene effettuata sulla base di un \textbf{Dataset} contenente circa 38.000 istanze di inserzioni caricate su eBay Kleinanzeigen (versione tedesca di eBay Annunci), raccolte nel 2016.
 \medskip
 \section{Specifica PEAS}
 Un ambiente viene generalmente descritto tramite la formulazione PEAS, ovvero 
@@ -30,5 +30,6 @@ Un'altra caratteristica rilevante è che la predizione verrà effettuata sulla b
 In riferimento a queste considerazioni risulta quindi evidente che la soluzione più conveniente sia quella di modellare un agente capace di apprendere, e in particolare un regressore, dato che il loro scopo è proprio quello di risolvere problemi di questo tipo,
 
 \medskip
+\label{sec:problematicheDataset}
 \section{Problematiche del Dataset}
 Per il problema in esame è stata riscontrata un'elevata carenza di Dataset utili alla sua risoluzione. Per questo motivo è stato selezionato un Dataset che, nonostante sia adatto per il raggiungimento degli obiettivi del progetto, contiene dati risalenti al 2016 che rendono il modello di Machine Learning non attuale. È importante notare quindi che i risultati prodotti da AutoMate non sono una stima corretta del valore reale di un'auto rispetto alla situazione corrente del mercato.
