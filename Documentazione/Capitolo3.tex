@@ -18,35 +18,35 @@ Come precedentemente specificato, lo sviluppo del progetto seguirà il modello C
 \subsection{Business Understanding}
 La fase di \textbf{Business Understanding} prevede, come tutte le fasi iniziali di un progetto software, attività di raccolta dei requisiti e definizione degli obiettivi di business che si intende raggiungere. Inoltre è necessario determinare la disponibilità delle risorse, stimare i rischi e selezionare le tecnologie e i tool necessari al raggiungimento degli obiettivi.
 
-\paragraph{Obiettivi di business.}
-AutoMate ha come obiettivo principe quello di conferire ai suoi utilizzatori uno strumento che sia in grado di stimare il valore di un'auto tenendo conto sia di caratteristiche più generali come marca e modello, sia di informazioni più specifiche come tipo di trasmissione, potenza e presenza di danni e/o difetti.
+\paragraph{\textcolor[HTML]{000099}{\underline{Obiettivi di business}}}
+AutoMate ha come obiettivo principe quello di conferire ai suoi utilizzatori uno strumento che sia in grado di stimare il valore di un'auto tenendo conto sia di caratteristiche più generali come marca e modello, sia di informazioni più specifiche come tipo di trasmissione, potenza, tipo di alimentazione.
 
-\paragraph{Disponibilità delle risorse.}
+\paragraph{\textcolor[HTML]{000099}{\underline{Disponibilità delle risorse}}}
 Come già discusso nella \hyperref[sec:problematicheDataset]{\textbf{Sezione 2.4}}
 la bassa disponibilità di Dataset ha portato alla selezione di un insieme di dati non molto recente (i dati sono stati estratti nel 2016). Ciò non rappresenta un grosso problema dal punto di vista della realizzazione del modello poiché la struttura di un ideale Dataset più recente sarebbe abbastanza simile. Tuttavia ciò comporta un certo grado di inattualità che compromette l'utilizzo efficace di AutoMate in tempi odierni.
 
-\paragraph{Stima dei rischi.}
+\paragraph{\textcolor[HTML]{000099}{\underline{Stima dei rischi}}}
 Tra i possibili rischi che si potrebbero presentare è opportuno prestare particolare attenzione alle caratteristiche su cui la predizione sarà effettuata. Se non accuratamente selezionate, le features utilizzate per stimare il valore dell'auto potrebbero portare a risultati non corretti o comunque molto distanti dalla realtà.
 
-\paragraph{Tecnologie e tool utilizzati.}
+\paragraph{\textcolor[HTML]{000099}{\underline{Tecnologie e tool utilizzati}}}
 Per lo sviluppo del modello e le operazioni di acquisizione, analisi e modellazione dei dati verrà utilizzato il linguaggio \textbf{Python} e nello specifico le librerie \textbf{pandas}, \textbf{seaborn} e \textbf{Scikit-learn}.
 \pagebreak
 
 \subsection{Data Understanding}
 La fase di \textbf{Data Understanding} si compone delle operazioni di identificazione, collezione e analisi dei Dataset che possono portare al raggiungimento degli obiettivi. Vengono infine identificati e discussi possibili problemi di qualità dei dati.
 
-\paragraph{Identificazione e Collezione dei Dataset.}
+\paragraph{\textcolor[HTML]{000099}{\underline{Identificazione e Collezione dei Dataset}}}
 Il Dataset selezionato per la risoluzione del problema è stato recuperato da \textbf{Kaggle}, una delle piattaforme più utilizzate nei campi della Data Science e del Machine Learning. Il Dataset è reperibile a questo link:
 \textit{\url{https://www.kaggle.com/datasets/shaunoilund/auto-sales-ebay-germany-random-50k-cleaned}} %Rendere il link blu
 
-\paragraph{Analisi dei Dataset.}
+\paragraph{\textcolor[HTML]{000099}{\underline{Analisi dei Dataset}}}
 Il Dataset utilizzato contiene oltre 37.000 inserzioni di auto caricate su eBay Kleinanzeigan da utenti privati ed è rappresentato da un file in formato .csv (Comma-Separeted Values) all'interno del quale ogni record è descritto da valori separati da virgola.
 
 Il Dataset presenta 18 campi, i quali vengono riportati di seguito con una breve descrizione:
 
 \begin{itemize}
-    \item \textbf{id}: identificativo dell'inserzione;
-    \item \textbf{data\textunderscore crawled}: data di estrazione dell'inserzione.
+    \item \textbf{Id}: identificativo dell'inserzione;
+    \item \textbf{date\textunderscore crawled}: data di estrazione dell'inserzione.
     \item \textbf{car\textunderscore name}: testo dell'inserzione.
     \item \textbf{price\textunderscore EUR}: prezzo dell'auto in euro.
     \item \textbf{ab \textunderscore test}: se l'inserzione è inclusa in un test A/B.
@@ -60,9 +60,9 @@ Il Dataset presenta 18 campi, i quali vengono riportati di seguito con una breve
     \item \textbf{fuel\textunderscore type}: tipo di carburante dell'auto.
     \item \textbf{brand}: marca dell'auto.
     \item \textbf{unrepaired\textunderscore damage}: presenza di danni non riparati all'auto.
-    \item \textbf{date\textunderscore created}: data di creazione dell'inserzione.
+    \item \textbf{add\textunderscore created}: data di creazione dell'inserzione.
     \item \textbf{postal\textunderscore code}: codice postale della locazione dell'auto.
-    \item \textbf{last\textunderscore seen\textunderscore online}: data dell'ultima visita da parte del crawler.
+    \item \textbf{last\textunderscore seen}: data dell'ultima visita da parte del crawler.
 \end{itemize}
 Come si può notare, alcuni dei campi sopraelencati forniscono informazioni soltanto sull'annuncio dell'auto e non sull'auto stessa: non saranno pertanto presi in considerazione.
 
@@ -74,7 +74,7 @@ I risultati più interessanti dell'esplorazione sono di seguito riportati e disc
 \lstset{language=Python}
 \lstset{frame=lines}
 \lstset{caption={\textbf{Codice utilizzato per l'esplorazione dei dati.}}}
-\lstset{label={lst:codice}}
+\lstset{label={lst:codice1}}
 \lstset{basicstyle=\footnotesize}
 \lstset{columns=fullflexible}
 \begin{lstlisting}
@@ -85,14 +85,20 @@ import seaborn as sns
 #Importiamo il file .csv contenente i dati
 df = pd.read_csv("autos_random_50k_cleaned.csv")
 
-#Ricaviamo dalla colonna dell'anno di immatricolazione la colonna degli anni dell'auto
-df['anni'] = 2016 - df['registration_year']
+#Diamo un nome alla colonna degli Id
+df.rename(columns={"Unnamed: 0": "Id"}, inplace=True)
 
-#Rimuoviamo le auto d'epoca
-df = df[(df['anni'] >= 0) & (df['anni'] <= 30)]
+#Settiamo gli Id del DataFrame considerando la colonna degli Id del Dataset
+df.set_index("Id", inplace=True)
+
+#Ricaviamo dalla colonna dell'anno di immatricolazione la colonna degli anni dell'auto
+df['registration_year'] = 2016 - df['registration_year']
+
+#Rinominiamo la colonna dell'anno di immatricolazione
+df.rename(columns={'registration_year': 'anni'}, inplace=True)
 
 #Costruiamo gli scatter plot tra le variabili indipendenti potenza, anni e chilometraggio
-#e la variabile dipendente
+#e la variabile dipendente price_EUR
 sns.pairplot(df, x_vars='power_ps', y_vars='price_EUR', height=5, aspect=1.5, 
             kind='reg', plot_kws={'line_kws':{'color':'red'}})
 
@@ -137,15 +143,159 @@ Dando un ulteriore sguardo al grafico, sembrerebbe che i valori impostati dai ve
 Tra i pochi dati di tipo numerico presenti nel Dataset, questi presentavano le relazioni più interessanti. Altri (come il mese di immatricolazione) non fornivano informazioni rilevanti rispetto alla predizione del prezzo. I dati di tipo qualitativo, invece, verranno trattati diversamente nella fase di Data Preparation, dato che non è possibile visualizzarli direttamente in un grafico a dispersione.
 \pagebreak
 
-\paragraph{Possibili problemi di qualità.}
-Il Dataset utilizzato non è purtroppo esente da difetti. Un esempio è il campo power\textunderscore ps (potenza): alcune istanze presentano valori superiori a 1000 CV, il che fa dedurre che probabilmente è stata inserita la cilindrata al posto della potenza. 
+\paragraph{\textcolor[HTML]{000099}{\underline{Possibili problemi di qualità}}}
+Il Dataset utilizzato non è purtroppo esente da difetti. Un esempio è il campo \textit{power\textunderscore ps} (potenza): alcune istanze presentano valori superiori a 1000 CV, il che fa dedurre che probabilmente, per queste istanze, è stata inserita la cilindrata al posto della potenza. 
 
 Un altro problema è rappresentato dal fatto che all'interno del Dataset sono presenti istanze di auto d'epoca le quali, facendo parte di un mercato completamente diverso, rischiano di influenzare negativamente la stima effettuata dal modello. 
 
-Ciononostante non sono stati rilevati altri problemi di qualità, presumibilmente dovuto al fatto che il Dataset è stato già pulito dall'utente che l'ha caricato su Kaggle.
+Infine alcune righe del Dataset contengono valori "Unknown" (sconosciuti) in corrispondenza di alcune colonne. Essi equivalgono a tutti gli effetti a delle istanze con campi nulli. Sarà quindi necessario utilizzare tecniche di Data Cleaning per risolvere il problema.
 \medskip
 
 \subsection{Data Preparation}
+L'obiettivo della fase di \textbf{Data Preparation} è quello di preparare i dati in maniera tale che possano essere utilizzati nei successivi passi del processo.
+
+È in questa fase infatti che vengono selezionate le caratteristiche (\textbf{features}) del problema che hanno maggiore potenza predittiva, vengono puliti i dati sulla base dei problemi di qualità riscontrati nella fase precedente e vengono infine formattati i dati in maniera tale che possano essere utilizzati da un modello di Machine Learning.
+
+\noindent Gli step della Data Preparation sono quindi essenzialmente 4: \mbox{\textbf{Data Cleaning}}, \textbf{Feature Scaling}, \textbf{Feature Selection}, \textbf{Data Balancing}.
+\bigskip
+\bigskip
+
+\paragraph{\textcolor[HTML]{000099}{\underline{Data Cleaning}}}
+In questa fase vengono risolti i problemi di qualità riscontrati nella fase di esplorazione e analisi dei dati.
+
+Nella fattispecie, il dataset presentava alcuni problemi riguardanti la colonna della potenza (\textit{power\textunderscore ps}) e la colonna degli \textit{anni}.
+
+Per quanto riguarda la potenza, sono state esaminate più accuratamente le istanze che presentavano un valore di \textit{power\textunderscore ps} maggiore di 1000 CV. Trattandosi di potenze ben superiori alla media, probabilmente è stato commesso qualche errore dal venditore in fase di inserimento delle informazioni del veicolo. L'intenzione era quindi quella di rimuovere queste righe dal Dataset.
+
+Tuttavia il codice utilizzato per l'analisi produceva questi risultati:
+\bigskip
+\lstset{language=Python}
+\lstset{frame=lines}
+\lstset{caption={\textbf{Codice utilizzato per analizzare le righe del Dataset con potenza maggiore di 1000 CV.}}}
+\lstset{label={lst:codice2}}
+\lstset{basicstyle=\footnotesize}
+\lstset{columns=fullflexible}
+\begin{lstlisting}
+#Analizziamo le istanze che presentano un valore di power_ps maggiore di 1000 CV
+power_psSubset = df[(df['power_ps'] >= 1000)]
+
+#Visualizziamo il numero di righe del sottoinsieme creato
+print("power_psSubset:", power_psSubset.shape)
+\end{lstlisting}
+
+\begin{figure}
+    \centering
+    \caption{\textbf{Risultati del Codice \ref{lst:codice2}}}
+    \includegraphics{Immagini/RisCodice2.png}
+    \label{fig:my_label}
+\end{figure}
+
+I risultati soprariportati evidenziano che il Dataset contiene solo 8 auto con un valore di \textit{power\textunderscore ps} superiore a 1000 CV, poco più dello 0,02\% dell'intero insieme di dati. 
+
+A tal proposito si è deciso di mantenerli all'interno del Dataset poichè la loro quantità rispetto al numero totale di righe (37866) fa sì che la loro influenza sul regressore sia quasi nulla e quindi trascurabile.
+
+Per quanto concerne invece la colonna degli \textit{anni}, il problema preso in considerazione riguardava la diversità tra il mercato delle auto d'epoca e il mercato delle auto usate ordinarie. Sono state per questo motivo escluse dal Dataset attraverso il codice di seguito riportato:
+
+\lstset{language=Python}
+\lstset{frame=lines}
+\lstset{caption={\textbf{Codice utilizzato per escludere le auto d'epoca dal Dataset.}}}
+\lstset{label={lst:codice3}}
+\lstset{basicstyle=\footnotesize}
+\lstset{columns=fullflexible}
+\begin{lstlisting}
+#Rimuoviamo le auto d'epoca
+df = df[(df['anni'] >= 0) & (df['anni'] <= 30)]
+\end{lstlisting}
+\bigskip
+
+Infine, come precedentemente anticipato, occorre risolvere il problema dei dati mancanti. A tal proposito possono essere utilizzate tecniche di \textbf{Data Imputation}. Nel nostro caso abbiamo optato per la rimozione delle righe del Dataset che presentavano il valore "Unknown" in uno o più campi. Per motivi di Feature Selection descritti nei paragrafi successivi, queste righe sono state rimosse soltanto dopo aver escluso alcune features non rilevanti. Sotto viene riportato il codice utilizzato:
+
+\lstset{language=Python}
+\lstset{frame=lines}
+\lstset{caption={\textbf{Codice utilizzato per la Data Imputation.}}}
+\lstset{label={lst:codice4}}
+\lstset{basicstyle=\footnotesize}
+\lstset{columns=fullflexible}
+\begin{lstlisting}
+#Riduciamo il Dataset alle sole Features selezionate e la variabile Target
+#I motivi sono descritti nel paragrafo relativo alla Feature Selection
+df = df[['price_EUR', 'vehicle_type', 'anni', 'transmission', 'power_ps', 'odometer_km', 'fuel_type', 'brand']]
+
+#Rimuoviamo le righe del Dataset con valori Unknown (sconosciuti)
+df = df[df != "Unknown"]
+df = df.dropna(axis=0)
+\end{lstlisting}
+\bigskip
+\bigskip
+
+\paragraph{\textcolor[HTML]{000099}{\underline{Feature Scaling}}}
+Nella fase di Feature Scaling lo scopo è quello di normalizzare l'insieme di valori delle caratteristiche del Dataset, in maniera tale da conferire la stessa importanza ad ognuna delle features e quindi evitare che il modello sovrastimi o sottostimi l'importanza di una variabile (se questa ha una distribuzione superiore o inferiore rispetto a quella delle altre).
+
+Esistono diverse tecniche di normalizzazione. Nel caso specifico, per garantire che tutte le caratteristiche abbiano lo stesso "peso", si è adottata la \textbf{Z-Score normalization}. Questa procedura consiste nel trasformare ogni valore in una unità di deviazione standard rispetto alla media della serie di dati. 
+
+Di seguito viene raffigurato il codice che ci ha permesso di effettuare l'operazione di normalizzazione sulle colonne numeriche del Dataset:
+
+\lstset{language=Python}
+\lstset{frame=lines}
+\lstset{caption={\textbf{Codice utilizzato per la Z-Score normalization.}}}
+\lstset{label={lst:codice5}}
+\lstset{basicstyle=\footnotesize}
+\lstset{columns=fullflexible}
+\begin{lstlisting}
+#Selezioniamo il sottoinsieme di features da normalizzare
+toNormalize = df[['power_ps', 'anni', 'odometer_km']]
+
+#Sovrascriviamo le colonne del Dataset originale
+df[['power_ps', 'anni', 'odometer_km']] = toNormalize.apply(zscore)
+\end{lstlisting}
+\bigskip
+
+Le altre features di tipo numerico non sono state normalizzate a causa del loro significato: l'\textit{Id} è soltanto un riferimento ad una precisa istanza del Dataset; il \textit{postal\textunderscore code} e \textit{registration\textunderscore month} sono informazioni superflue per il problema in esame.
+\bigskip
+\bigskip
+
+\paragraph{\textcolor[HTML]{000099}{\underline{Feature Selection}}}
+In questa fase avviene il processo di definizione delle features che possono caratterizzare gli aspetti principali del problema e, quindi, avere una buona potenza predittiva.
+Il processo che definisce le metodologie per identificare le caratteristiche dai dati grezzi estraibili è detto \textbf{Feature Engineering}.
+
+Una delle tecniche più utilizzate in questo contesto è la \textbf{Feature Selection}, che consiste nel selezionare le variabili più significative partendo da quelle a disposizione.
+
+Rispetto al problema considerato, segue una descrizione dettagliata del processo di Feature Selection messo in atto.
+
+\begin{itemize}
+    \item \textbf{Features scartate:}
+    le features che sono state scartate sono le seguenti: \textcolor{red}{\textit{date\textunderscore crawled}}, \textcolor{red}{\textit{ad\textunderscore created}}, \textcolor{red}{\textit{postal\textunderscore code}}, \textcolor{red}{\textit{last\textunderscore seen}}, \textcolor{red}{\textit{car\textunderscore name}}, \textcolor[HTML]{00AA00}{\textit{registration\textunderscore month}}, \textcolor[HTML]{00AA00}{\textit{ab\textunderscore test}}, \textit{unrepaired\textunderscore damage} e \textit{model} .    
+    
+    Le \textcolor{red}{features in rosso} sono state scartate perché fornivano dettagli relativi all'inserzione piuttosto che all'auto, ed aggiungevano quindi solo rumore.
+
+    Le \textcolor[HTML]{00AA00}{features in verde} invece, sono state scartate perché non utili ai fini della risoluzione del problema (il mese di immatricolazione è molto meno importante dell'anno e i dati per l'A/B Testing non aiutano in alcun modo il modello).
+
+    La feature relativa alla presenza di danni non riparati (\textit{unrepaired\textunderscore damage}), seppur apparantemente discriminante, non può essere utilizzata efficacemente. Questo perché il valore di un'auto, in caso di danni, è influenzato non solo dalla loro presenza ma anche dalla loro gravità.
+    
+    Infine, il \textit{model} è stato rimosso poiché caratterizzare il problema prendendo in considerazione anche i modelli delle auto risultava molto complesso. Inoltre il modello sarebbe stato incapace di stimare il valore di un'auto nei casi in cui, per il modello di quest'ultima, non ci fossero state corrispondenze nel Training Set.
+
+    \medskip
+    \item \textbf{Feature selezionate:}
+
+    Le features che sono state invece mantenute sono: \textit{brand}, \mbox{\textit{vehicle\textunderscore type}}, \textit{registration\textunderscore year} (convertito in \textit{anni}), \textit{transmission}, \mbox{\textit{power\textunderscore ps}}, \mbox{\textit{odometer\textunderscore km}}, \textit{fuel\textunderscore type}
+
+
+    Trattandosi di un problema di regressione, bisogna gestire le features qualitative in maniera diversa. L'approccio utilizzato è il seguente:
+    \medskip
+    
+    la feature \textit{brand} è stata convertita nella feature \textit{\textbf{fascia}}. Ad ogni marca di auto è stato assegnato un valore tra "bassa", "media", "alta" che fa riferimento alla fascia di prezzi media delle auto prodotte da quel brand. Ad esempio FIAT corrisponde a "bassa", Volkswagen a "media" e Porsche a "alta".
+
+    Ad ognuna di queste fasce viene fatto corrispondere un prezzo di partenza uguale alla media dei prezzi delle auto appartenenti a quella specifica classe.
+
+    \begin{itemize}
+    \renewcommand\labelitemi{\textbf{-}}
+        
+    \end{itemize}
+    
+\end{itemize}
+
+\paragraph{Data Balancing.}
+
 
 \subsection{Data Modeling}
 
