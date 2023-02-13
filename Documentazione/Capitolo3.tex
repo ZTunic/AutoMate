@@ -29,7 +29,7 @@ la bassa disponibilità di Dataset ha portato alla selezione di un insieme di da
 Tra i possibili rischi che si potrebbero presentare è opportuno prestare particolare attenzione alle caratteristiche su cui la predizione sarà effettuata. Se non accuratamente selezionate, le features utilizzate per stimare il valore dell'auto potrebbero portare a risultati non corretti o comunque molto distanti dalla realtà.
 
 \paragraph{\textcolor[HTML]{000099}{\underline{Tecnologie e tool utilizzati}}}
-Per lo sviluppo del modello e le operazioni di acquisizione, analisi e modellazione dei dati verrà utilizzato il linguaggio \textbf{Python} e nello specifico le librerie \textbf{pandas}, \textbf{seaborn} e \textbf{Scikit-learn}.
+Per lo sviluppo del modello e le operazioni di acquisizione, analisi e preparazione dei dati verrà utilizzato il linguaggio \textbf{Python} e nello specifico le librerie \textbf{pandas} e \textbf{seaborn}. Per la creazione del modello verrà invece utilizzata la libreria \textbf{Scikit-learn}.
 \pagebreak
 
 \subsection{Data Understanding}
@@ -37,7 +37,7 @@ La fase di \textbf{Data Understanding} si compone delle operazioni di identifica
 
 \paragraph{\textcolor[HTML]{000099}{\underline{Identificazione e Collezione dei Dataset}}}
 Il Dataset selezionato per la risoluzione del problema è stato recuperato da \textbf{Kaggle}, una delle piattaforme più utilizzate nei campi della Data Science e del Machine Learning. Il Dataset è reperibile a questo link:
-\textit{\url{https://www.kaggle.com/datasets/shaunoilund/auto-sales-ebay-germany-random-50k-cleaned}} %Rendere il link blu
+\textcolor{blue}{\textit{\url{https://www.kaggle.com/datasets/shaunoilund/auto-sales-ebay-germany-random-50k-cleaned}}}
 
 \paragraph{\textcolor[HTML]{000099}{\underline{Analisi dei Dataset}}}
 Il Dataset utilizzato contiene oltre 37.000 inserzioni di auto caricate su eBay Kleinanzeigan da utenti privati ed è rappresentato da un file in formato .csv (Comma-Separeted Values) all'interno del quale ogni record è descritto da valori separati da virgola.
@@ -69,14 +69,9 @@ Come si può notare, alcuni dei campi sopraelencati forniscono informazioni solt
 Per quanto riguarda i restanti attributi, grazie all'uso delle librerie \mbox{Python} \textbf{pandas} e \textbf{seaborn}, sono state effettuate operazioni di esplorazione dei dati al fine di visualizzarli e rilevare eventuali relazioni.
 
 I risultati più interessanti dell'esplorazione sono di seguito riportati e discussi.
-\bigskip
 
-\lstset{language=Python}
-\lstset{frame=lines}
 \lstset{caption={\textbf{Codice utilizzato per l'esplorazione dei dati.}}}
 \lstset{label={lst:codice1}}
-\lstset{basicstyle=\footnotesize}
-\lstset{columns=fullflexible}
 \begin{lstlisting}
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -101,12 +96,16 @@ df.rename(columns={'registration_year': 'anni'}, inplace=True)
 #e la variabile dipendente price_EUR
 sns.pairplot(df, x_vars='power_ps', y_vars='price_EUR', height=5, aspect=1.5, 
             kind='reg', plot_kws={'line_kws':{'color':'red'}})
-
 sns.pairplot(df, x_vars='anni', y_vars='price_EUR', height=5, aspect=1.5, 
             kind='reg', plot_kws={'line_kws':{'color':'red'}})
-
 sns.pairplot(df, x_vars='odometer_km', y_vars='price_EUR', height=5, aspect=1.5, 
             kind='reg', plot_kws={'line_kws':{'color':'red'}})
+
+#Calcoliamo la correlazione tra le colonne del Dataset
+correlazione = df.corr(numeric_only=True)
+
+#Creiamo l'heatmap
+sns.heatmap(correlazione, annot=True, cmap='coolwarm')
 
 #Mostriamo i grafici
 plt.show()
@@ -140,7 +139,14 @@ Contrariamente alla potenza, il prezzo dell'auto in questo caso diminuisce all'a
 Come avveniva per gli anni, ad una quantità maggiore di chilometri percorsi corrisponde un prezzo minore,
 Dando un ulteriore sguardo al grafico, sembrerebbe che i valori impostati dai venditori per il chilometraggio delle proprie auto sia stato approssimato alla decina di migliaia più vicina al valore reale dei chilometri percorsi. Si potrebbe allo stesso modo approssimare il chilometraggio inserito dall'utente per effettuare la predizione.
 
-Tra i pochi dati di tipo numerico presenti nel Dataset, questi presentavano le relazioni più interessanti. Altri (come il mese di immatricolazione) non fornivano informazioni rilevanti rispetto alla predizione del prezzo. I dati di tipo qualitativo, invece, verranno trattati diversamente nella fase di Data Preparation, dato che non è possibile visualizzarli direttamente in un grafico a dispersione.
+Tra i pochi dati di tipo numerico presenti nel Dataset, questi appena descritti presentavano le relazioni più interessanti. Altri (come il mese di immatricolazione) non fornivano informazioni rilevanti rispetto alla predizione del prezzo. I dati di tipo qualitativo, invece, verranno trattati diversamente nella fase di Data Preparation, dato che non è possibile visualizzarli direttamente in un grafico a dispersione.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{Immagini/heatmap}
+    \caption{\textbf{HeatMap}}
+    \label{fig:anni}
+\end{figure}
+L'Heatmap (Mappa di calore) mostrata in figura contiene, per ognuna delle variabili indipendenti, il coefficiente di correlazione con le altre variabili indipendenti e il coefficiente di correlazione con la variabile dipendente. La mappa mette in evidenza diversi aspetti: il primo è che non ci sono problemi di multicollinearità per quanto riguarda le variabili utilizzate. Il secondo è che non ci sono predittori considerevolmente buoni. Ciò fa intuire che il problema della predizione del prezzo di un'auto è più complesso di quanto possa sembrare e che servirebbero più variabili per una stima più corretta.
 \pagebreak
 
 \paragraph{\textcolor[HTML]{000099}{\underline{Possibili problemi di qualità}}}
@@ -148,7 +154,7 @@ Il Dataset utilizzato non è purtroppo esente da difetti. Un esempio è il campo
 
 Un altro problema è rappresentato dal fatto che all'interno del Dataset sono presenti istanze di auto d'epoca le quali, facendo parte di un mercato completamente diverso, rischiano di influenzare negativamente la stima effettuata dal modello. 
 
-Infine alcune righe del Dataset contengono valori "Unknown" (sconosciuti) in corrispondenza di alcune colonne. Essi equivalgono a tutti gli effetti a delle istanze con campi nulli. Sarà quindi necessario utilizzare tecniche di Data Cleaning per risolvere il problema.
+Infine alcune righe del Dataset contengono valori "Unknown" (sconosciuti) o "Andere/Sonstige" (altro) in corrispondenza di alcune colonne. Essi equivalgono a tutti gli effetti a delle istanze con campi nulli. Sarà quindi necessario utilizzare tecniche di Data Cleaning per risolvere il problema.
 \medskip
 
 \subsection{Data Preparation}
@@ -169,12 +175,9 @@ Per quanto riguarda la potenza, sono state esaminate più accuratamente le istan
 
 Tuttavia il codice utilizzato per l'analisi produceva questi risultati:
 \bigskip
-\lstset{language=Python}
-\lstset{frame=lines}
 \lstset{caption={\textbf{Codice utilizzato per analizzare le righe del Dataset con potenza maggiore di 1000 CV.}}}
 \lstset{label={lst:codice2}}
-\lstset{basicstyle=\footnotesize}
-\lstset{columns=fullflexible}
+\pagebreak
 \begin{lstlisting}
 #Analizziamo le istanze che presentano un valore di power_ps maggiore di 1000 CV
 power_psSubset = df[(df['power_ps'] >= 1000)]
@@ -183,7 +186,7 @@ power_psSubset = df[(df['power_ps'] >= 1000)]
 print("power_psSubset:", power_psSubset.shape)
 \end{lstlisting}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \caption{\textbf{Risultati del Codice \ref{lst:codice2}}}
     \includegraphics{Immagini/RisCodice2.png}
@@ -196,33 +199,31 @@ A tal proposito si è deciso di mantenerli all'interno del Dataset poichè la lo
 
 Per quanto concerne invece la colonna degli \textit{anni}, il problema preso in considerazione riguardava la diversità tra il mercato delle auto d'epoca e il mercato delle auto usate ordinarie. Sono state per questo motivo escluse dal Dataset attraverso il codice di seguito riportato:
 
-\lstset{language=Python}
-\lstset{frame=lines}
 \lstset{caption={\textbf{Codice utilizzato per escludere le auto d'epoca dal Dataset.}}}
 \lstset{label={lst:codice3}}
-\lstset{basicstyle=\footnotesize}
-\lstset{columns=fullflexible}
 \begin{lstlisting}
 #Rimuoviamo le auto d'epoca
 df = df[(df['anni'] >= 0) & (df['anni'] <= 30)]
 \end{lstlisting}
 \bigskip
 
-Infine, come precedentemente anticipato, occorre risolvere il problema dei dati mancanti. A tal proposito possono essere utilizzate tecniche di \textbf{Data Imputation}. Nel nostro caso abbiamo optato per la rimozione delle righe del Dataset che presentavano il valore "Unknown" in uno o più campi. Per motivi di Feature Selection descritti nei paragrafi successivi, queste righe sono state rimosse soltanto dopo aver escluso alcune features non rilevanti. Sotto viene riportato il codice utilizzato:
+Infine, come precedentemente anticipato, occorre risolvere il problema dei dati mancanti. A tal proposito possono essere utilizzate tecniche di \textbf{Data Imputation}. In questo caso si è deciso di rimuovere le righe del Dataset che presentavano i valori "Unknown", "Andere" e "Sonstige\textunderscore autos" (altre auto) in uno o più campi. Per motivi di Feature Selection descritti nei paragrafi successivi, queste righe sono state rimosse soltanto dopo aver escluso alcune features non rilevanti. Sotto viene riportato il codice utilizzato:
 
-\lstset{language=Python}
-\lstset{frame=lines}
+\pagebreak
+
 \lstset{caption={\textbf{Codice utilizzato per la Data Imputation.}}}
 \lstset{label={lst:codice4}}
-\lstset{basicstyle=\footnotesize}
-\lstset{columns=fullflexible}
 \begin{lstlisting}
 #Riduciamo il Dataset alle sole Features selezionate e la variabile Target
 #I motivi sono descritti nel paragrafo relativo alla Feature Selection
 df = df[['price_EUR', 'vehicle_type', 'anni', 'transmission', 'power_ps', 'odometer_km', 'fuel_type', 'brand']]
 
-#Rimuoviamo le righe del Dataset con valori Unknown (sconosciuti)
+#Rimuoviamo le righe del Dataset con valori "Unknown" o "altro (andere/sonstige)" (sconosciuti)
 df = df[df != "Unknown"]
+df = df.dropna(axis=0)
+df = df[df != "andere"]
+df = df.dropna(axis=0)
+df = df[df != "sonstige_autos"]
 df = df.dropna(axis=0)
 \end{lstlisting}
 \bigskip
@@ -235,12 +236,8 @@ Esistono diverse tecniche di normalizzazione. Nel caso specifico, per garantire 
 
 Di seguito viene raffigurato il codice che ci ha permesso di effettuare l'operazione di normalizzazione sulle colonne numeriche del Dataset:
 
-\lstset{language=Python}
-\lstset{frame=lines}
 \lstset{caption={\textbf{Codice utilizzato per la Z-Score normalization.}}}
 \lstset{label={lst:codice5}}
-\lstset{basicstyle=\footnotesize}
-\lstset{columns=fullflexible}
 \begin{lstlisting}
 #Selezioniamo il sottoinsieme di features da normalizzare
 toNormalize = df[['power_ps', 'anni', 'odometer_km']]
@@ -251,8 +248,7 @@ df[['power_ps', 'anni', 'odometer_km']] = toNormalize.apply(zscore)
 \bigskip
 
 Le altre features di tipo numerico non sono state normalizzate a causa del loro significato: l'\textit{Id} è soltanto un riferimento ad una precisa istanza del Dataset; il \textit{postal\textunderscore code} e \textit{registration\textunderscore month} sono informazioni superflue per il problema in esame.
-\bigskip
-\bigskip
+\pagebreak
 
 \paragraph{\textcolor[HTML]{000099}{\underline{Feature Selection}}}
 In questa fase avviene il processo di definizione delle features che possono caratterizzare gli aspetti principali del problema e, quindi, avere una buona potenza predittiva.
@@ -274,7 +270,7 @@ Rispetto al problema considerato, segue una descrizione dettagliata del processo
     
     Infine, il \textit{model} è stato rimosso poiché caratterizzare il problema prendendo in considerazione anche i modelli delle auto risultava molto complesso. Inoltre il modello sarebbe stato incapace di stimare il valore di un'auto nei casi in cui, per il modello di quest'ultima, non ci fossero state corrispondenze nel Training Set.
 
-    \medskip
+    \pagebreak
     \item \textbf{Feature selezionate:}
 
     Le features che sono state invece mantenute sono: \textit{brand}, \mbox{\textit{vehicle\textunderscore type}}, \textit{registration\textunderscore year} (convertito in \textit{anni}), \textit{transmission}, \mbox{\textit{power\textunderscore ps}}, \mbox{\textit{odometer\textunderscore km}}, \textit{fuel\textunderscore type}
@@ -282,23 +278,97 @@ Rispetto al problema considerato, segue una descrizione dettagliata del processo
 
     Trattandosi di un problema di regressione, bisogna gestire le features qualitative in maniera diversa. L'approccio utilizzato è il seguente:
     \medskip
+    \lstset{caption={\textbf{Codice utilizzato per la gestione delle variabili qualitative.}}}
+    \lstset{label={lst:codice6}}
+    \begin{lstlisting}
+    #Creiamo un sottoinsieme di variabili qualitative
+    var_qualitative = df.select_dtypes(include=['object'])
     
-    la feature \textit{brand} è stata convertita nella feature \textit{\textbf{fascia}}. Ad ogni marca di auto è stato assegnato un valore tra "bassa", "media", "alta" che fa riferimento alla fascia di prezzi media delle auto prodotte da quel brand. Ad esempio FIAT corrisponde a "bassa", Volkswagen a "media" e Porsche a "alta".
-
-    Ad ognuna di queste fasce viene fatto corrispondere un prezzo di partenza uguale alla media dei prezzi delle auto appartenenti a quella specifica classe.
-
-    \begin{itemize}
-    \renewcommand\labelitemi{\textbf{-}}
-        
-    \end{itemize}
+    #Convertiamole in variabili dummies
+    var_dummies = pd.get_dummies(var_qualitative, drop_first=True)
+    
+    #Rimuoviamo dal dataset le colonne qualitative originali
+    df = df.drop(list(var_qualitative.columns), axis=1)
+    
+    #Inseriamo le variabili qualitative all'interno del Dataset
+    df = pd.concat([df, var_dummies], axis=1)
+    \end{lstlisting}
+    Il procedimento utilizzato prevede la conversione delle variabili qualitative in variabili dummy ("manichino"). Attraverso queste ultime è possibile integrare in un modello di regressione anche variabili di tipo non numerico. La conversione si basa sul creare una nuova variabile binaria per ogni possibile valore della variabile qualitativa (ad eccezione di una, dato che il suo valore è derivabile da quello delle altre). Queste variabili binarie saranno poi incluse nella funzione di regressione. Come riportato nel Codice \ref{lst:codice6}, sono state prodotte le variabili dummy per ciascuna delle features qualitative selezionate (\textit{transmission}, \textit{fuel\textunderscore type}, \textit{brand} e \textit{vehicle\textunderscore type}).
     
 \end{itemize}
 
-\paragraph{Data Balancing.}
-
-
+\paragraph{\textcolor[HTML]{000099}{\underline{Data Balancing}}}
+Per i problemi di regressione, prevedere operazioni di Data Balancing non è tanto importante quanto per i problemi di classificazione, dato che possibili problematiche relative a sbilanciamenti del Dataset per i valori della classe target sono assenti.
+\pagebreak
 \subsection{Data Modeling}
+Una volta sistemati i dati, si prosegue con la fase di \textbf{Data Modeling}, dove viene definito l'algoritmo di Machine Learning in relazione al problema in esame e ai dati a disposizione.
+
+Una volta scelto il modello da realizzare, esso viene addestrato. Ciò viene effettuato dividendo il Dataset di partenza in maniera tale da considerare alcune delle istanze come non note.
+
+Il Training Set conterrà le istanze che l'algoritmo utilizzerà per allenarsi; il Test Set, invece, raggrupperà quelle istanze per cui l'algoritmo allenato dovrà predire il valore.
+
+Tale suddivisione è dettata dal fatto che addestrare e validare un modello di machine learning sullo stesso Dataset porta ad avere risultati totalmente inaffidabili.
+
+Data la natura del problema in esame, come specificato nei capitoli precedenti, si è deciso di sviluppare un modello di regressione lineare. 
+
+Esistono diversi modi per dividere Training e Test set. La tecnica scelta in questo contesto è stata la \textbf{10-fold cross validation}, tecnica che consiste nella ripetuta partizione e valutazione dell'insieme dei dati di partenza.
+
+Nella pagina successiva viene mostrato il codice utilizzato per la realizzazione del modello di regressione lineare:
+\pagebreak
+    \lstset{caption={\textbf{Codice utilizzato per la realizzazione del modello di regressione lineare.}}}
+    \lstset{label={lst:codice7}}
+    \begin{lstlisting}
+    #Selezioniamo il sottoinsieme di features che il modello utilizzerà per le sue predizioni
+    x = df.drop(columns="price_EUR", axis=1)
+
+    #Isoliamo la variabile dipendente
+    y = df["price_EUR"]
+
+    #Creiamo il modello di regressione lineare
+    reg = linear_model.LinearRegression(fit_intercept=True)
+
+    #Inizializziamo la 10-fold cross validation
+    ten_fold = model_selection.KFold(n_splits=10, shuffle=True, random_state=0)
+
+    #Creiamo un Array in cui memorizzeremo i MAE ad ogni iterazione
+    array_MAE = []
+
+    #Eseguiamo la convalida incrociata
+    for train_index, test_index in ten_fold.split(x):
+        x_train, x_test = x.iloc[train_index], x.iloc[test_index]
+        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
+
+        #Addestriamo il modello con la partizione di training corrente
+        reg.fit(x_train, y_train)
+
+        #Effettuiamo la predizione
+        y_pred = reg.predict(x_test)
+
+        #Calcoliamo il MAE per questa iterazione
+        MAE = metrics.mean_absolute_error(y_test, y_pred)
+        array_MAE.append(MAE)
+
+    #Calcoliamo la media dei MAE ottenuti in ogni iterazione
+    mean_MAE = sum(array_MAE) / len(array_MAE)
+
+    print("Media MAE:", mean_MAE)
+    \end{lstlisting}
+    \medskip
+    
+Come si può vedere sono state innanzitutto selezionate le features che il modello avrebbe dovuto utilizzare (\textit{brand}, \mbox{\textit{vehicle\textunderscore type}}, \textit{anni}, \textit{transmission}, \mbox{\textit{power\textunderscore ps}}, \mbox{\textit{odometer\textunderscore km}} e \textit{fuel\textunderscore type}) e la variabile target da predire \mbox{(\textit{price\textunderscore EUR})}, ed è stato creato il modello di regressione lineare. Il regressore è stato poi addestrato e valutato seguendo la tecnica della convalida incrociata. Nella sezione successiva verranno forniti ulteriori dettagli riguardo le metriche di valutazione utilizzate per valutare le prestazioni del modello creato.
+\pagebreak
 
 \subsection{Evaluation}
+La fase di \textbf{Evaluation} ha l'obiettivo di valutare se i risultati sono chiari, se sono in linea con gli obiettivi di business e se rivelano delle prospettive aggiuntive alle quali il progettista non aveva pensato. Viene inoltre valutato l'intero processo di sviluppo, interrogandosi su eventuali aspetti non convincenti, l'uso di metodologie alternative e il loro impatto sui risultati.
+
+In questa fase verranno discussi i risultati ottenuti dal modello di regressione lineare sviluppato per AutoMate.
+
+In primo luogo, nel contesto dei problemi di regressione, esistono diverse metriche con le quali è possibile effettuare un'analisi dei risultati ottenuti:
+\bigskip
+\begin{itemize}
+\centering
+    
+\end{itemize}
+
 
 \subsection{Deployment}

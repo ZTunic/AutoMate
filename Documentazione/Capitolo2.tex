@@ -1,15 +1,15 @@
 \chapter{Definizione del problema}
 \section{Obiettivi}
-L'obiettivo fondamentale di AutoMate è quello di realizzare un'applicazione Desktop che gli utenti possono utilizzare per stimare il valore di un'auto usata, fornendo in input le informazioni di quest'ultima (ad esempio marca, modello, chilometraggio, ecc.). La predizione viene effettuata sulla base di un \textbf{Dataset} contenente circa 38.000 istanze di inserzioni caricate su eBay Kleinanzeigen (versione tedesca di eBay Annunci), raccolte nel 2016.
+L'obiettivo fondamentale di AutoMate è quello di realizzare un'applicazione Desktop che gli utenti possono utilizzare per stimare il valore di un'auto usata, fornendo in input le informazioni di quest'ultima (ad esempio marca, potenza, chilometraggio, ecc.). La predizione viene effettuata sulla base di un \textbf{Dataset} contenente circa 38.000 istanze di inserzioni caricate su eBay Kleinanzeigen (versione tedesca di eBay Annunci), raccolte nel 2016.
 \medskip
 \section{Specifica PEAS}
 Un ambiente viene generalmente descritto tramite la formulazione PEAS, ovvero 
 Performance, Environment, Actuators, Sensors.
-\paragraph{\textcolor[HTML]{000099}{\underline{Performance}}} Fa riferimento alla misura di prestazione adottata per valutare l'operato dell'agente. Nel nostro caso, la misura di prestazione è data dall'accuratezza della predizione rispetto al valore reale dell'auto.
-\paragraph{\textcolor[HTML]{000099}{\underline{Environment}}} Descrizione degli elementi che formano l'ambiente. Nel nostro caso l'ambiente è costituito dagli utenti che utilizzano l'applicazione e dall'insieme di auto e le loro caratteristiche.
-\paragraph{\textcolor[HTML]{000099}{\underline{Actuators}}} Gli attuatori disponibili all'agente per intraprendere le azioni. Nel nostro caso l'attuatore corrisponde ad uno schermo utilizzato per mostrare il valore della predizione all'utente.
+\paragraph{\textcolor[HTML]{000099}{\underline{Performance}}} Fa riferimento alla misura di prestazione adottata per valutare l'operato dell'agente. In questo caso, la misura di prestazione è data dall'accuratezza della predizione rispetto al valore reale dell'auto.
+\paragraph{\textcolor[HTML]{000099}{\underline{Environment}}} Descrizione degli elementi che formano l'ambiente. In questo caso l'ambiente è costituito dagli utenti che utilizzano l'applicazione e dall'insieme di auto e le loro caratteristiche.
+\paragraph{\textcolor[HTML]{000099}{\underline{Actuators}}} Gli attuatori disponibili all'agente per intraprendere le azioni. In questo caso l'attuatore corrisponde ad uno schermo utilizzato per mostrare il valore della predizione all'utente.
 
-\paragraph{\textcolor[HTML]{000099}{\underline{Sensors}}} I sensori attraverso i quali riceve gli input percettivi. Nel nostro caso il sensore è rappresentato da un Form compilato dall'utente grazie ad una tastiera.
+\paragraph{\textcolor[HTML]{000099}{\underline{Sensors}}} I sensori attraverso i quali riceve gli input percettivi. In questo caso il sensore è rappresentato da un Form compilato dall'utente grazie ad una tastiera.
 \subsection{Caratteristiche dell'ambiente}
 Di seguito sono elencate le caratteristiche principali dell'ambiente:
 \begin{itemize}
@@ -34,3 +34,4 @@ In riferimento a queste considerazioni risulta quindi evidente che la soluzione 
 \label{sec:problematicheDataset}
 \section{Problematiche del Dataset}
 Per il problema in esame è stata riscontrata un'elevata carenza di Dataset utili alla sua risoluzione. Per questo motivo è stato selezionato un Dataset che, nonostante sia adatto per il raggiungimento degli obiettivi del progetto, contiene dati risalenti al 2016 che rendono il modello di Machine Learning non attuale. È importante notare quindi che i risultati prodotti da AutoMate non sono una stima corretta del valore reale di un'auto rispetto alla situazione corrente del mercato.
+Inoltre, il prezzo di un'auto dipende da moltissimi fattori, che sono trascurati o comunque non presenti all'interno del Dataset. Ciò rappresenta un'ulteriore elemento che allontana il prezzo stimato dal modello da quello reale.

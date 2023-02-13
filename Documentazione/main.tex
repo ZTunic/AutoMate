@@ -6,7 +6,15 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{xcolor}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage{listings}
+\lstset{
+language=Python,
+frame=lines,
+basicstyle=\footnotesize,
+columns=fullflexible,
+literate={à}{{\`a}}1,
+}
 \graphicspath{ {./images/} }
 \renewcommand{\lstlistingname}{Codice}
 
