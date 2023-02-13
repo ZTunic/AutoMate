@@ -21,13 +21,16 @@ AutoMate è un progetto sviluppato da due studenti dell'Università degli Studi 
 
 # Come utilizzare AutoMate
 
-Per utilizzare AutoMate è necessario scaricare il file "AutoMate.exe" presente all'interno della cartella [Eseguibile](https://github.com/ZTunic/AutoMate/tree/main/Eseguibile) di questa repository.
+Per utilizzare AutoMate è necessario clonare questa repository sulla propria macchina. Utilizzando PyCharm,  un IDE per Python (il linguaggio con il quale è stato realizzato l'agente intelligente), è possibile eseguire l'algoritmo realizzato.
 
 # Guida all'esecuzione
-
-Una volta scaricato l'eseguibile è possibile utilizzare l'interfaccia per fornire all'agente intelligente i dati relativi all'auto di cui si vuole calcolare il valore.
-
 Di seguito una guida all'esecuzione del programma.
+
+* Una volta clonata la repository, bisogna importarla in PyCharm. Da questo momento in poi è possibile eseguire il programma.
+
+![Principale](https://cdn.discordapp.com/attachments/1038154644028915783/1074818043689046046/immagine_principale.png)
+
+* Cliccando su "Run 'AutoMate'" verrà eseguita l'applicazione.
 
 * All'apertura dell'applicazione viene mostrata questa interfaccia:
 
