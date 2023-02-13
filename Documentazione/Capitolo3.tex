@@ -351,6 +351,9 @@ Nella pagina successiva viene mostrato il codice utilizzato per la realizzazione
     #Calcoliamo la media dei MAE ottenuti in ogni iterazione
     mean_MAE = sum(array_MAE) / len(array_MAE)
 
+    #Arrotondiamo alle prime 2 cifre decimali
+    mean_MAE = round(mean_MAE, 2)
+    
     print("Media MAE:", mean_MAE)
     \end{lstlisting}
     \medskip
@@ -364,11 +367,77 @@ La fase di \textbf{Evaluation} ha l'obiettivo di valutare se i risultati sono ch
 In questa fase verranno discussi i risultati ottenuti dal modello di regressione lineare sviluppato per AutoMate.
 
 In primo luogo, nel contesto dei problemi di regressione, esistono diverse metriche con le quali è possibile effettuare un'analisi dei risultati ottenuti:
-\bigskip
-\begin{itemize}
-\centering
+\begin{center}
+    \textbf{MAE (Mean Absolute Error)}: $\frac{\sum_{i=1}^{n}|\tilde{y}-y|}{n}$
     
-\end{itemize}
+    \medskip
+    La metrica MAE indica la differenza media osservata tra i valori 
+    predetti e i valori reali del test set
+
+    \medskip
+    \textbf{MSE (Mean Squared Error)}: $\frac{\sum_{i=1}^{n}(\tilde{y}-y)^2}{n}$
+
+    \medskip
+    La metrica MSE indica l’errore quadratico medio commesso sui dati 
+    presenti nel test set.
+
+    \medskip
+    \textbf{RMSE (Root Mean Squared Error)}: $\sqrt{\frac{\sum_{i=1}^{n}(\tilde{y}-y)^2}{n}}$
+
+    \medskip
+    La metrica RMSE indica la radice quadrata dell’errore quadratico 
+    medio commesso sui dati presenti nel test set.
+
+    \medskip
+\end{center}
+\bigskip
+La metrica utilizzata per valutare le prestazioni del modello creato è la MAE, poiché la sua interpretazione è molto semplice.
+In riferimento al Codice \ref{lst:codice7}, l'istruzione relativa alla stampa  produce questi risultati:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{Immagini/RisCodice7}
+    \caption{\textbf{Risultati del Codice \ref{lst:codice7}}}
+    \label{fig:RisCodice7}
+\end{figure}
+\pagebreak
+
+Possiamo interpretare il risultato ottenuto come: il prezzo di un'auto predetto dal modello di regressione lineare è, in media, distante di circa \textbf{2850 euro} dal prezzo reale.
+
+Come si può notare, l'esito non è molto soddisfacente: il modello creato è poco preciso. Si è deciso quindi di provare a rimodellare e rivalutare il regressore considerando anche la variabile \textit{unrepaired\textunderscore damage}, con l'intenzione di fornire informazioni (seppur, come specificato nella sezione relativa alla Feature Selection, non molto significative) sulla presenza di eventuali danni. Il codice utilizzato è il seguente:
+
+\lstset{caption={\textbf{Rivalutazione del modello utilizzando una variabile aggiuntiva: \textit{unrepaired\textunderscore damage}.}}}
+    \lstset{label={lst:codice8}}
+    \begin{lstlisting}
+    #Riduciamo il Dataset alle sole Features selezionate (e "unrepaired_damage")
+    e la variabile Target
+    df = df[['price_EUR', 'vehicle_type', 'anni', 'transmission', 'power_ps', 
+            'odometer_km', 'fuel_type', 'brand', 'unrepaired_damage']]
+
+        ...
+        ...             #Creiamo il modello di regressione come
+        ...             #fatto precedentemente
+        ...
+
+        
+    #Stampiamo la media dei MAE del nuovo modello
+    print("Media MAE:", mean_MAE)
+    
+    \end{lstlisting}
+\medskip
+
+Il modello, con questa configurazione, ha una MAE di circa 2910, di poco superiore al valore della metrica del modello precedente. Ciò fa intuire che probabilmente le prestazioni sono negativamente influenzate da fattori esterni alla fase di modellazione. Come si spiega allora il comportamento del regressore?
+\medskip
+
+Una prima possibile motivazione è che il problema della predizione del prezzo di un'auto è tutt'altro che semplice: le colonne presenti nel Dataset utilizzato fanno riferimento ad un piccolo sottoinsieme delle caratteristiche tecniche di un'auto. Basare la predizione su un insieme così limitato porterà inevitabilmente il modello a commettere errori più penalizzanti.
+
+\medskip
+Un'altra possibile causa del comportamento del modello è che il prezzo di un'auto è influenzato non solo dalle sue caratteristiche tecniche e dalle sue condizioni, ma anche da fattori difficilmente prevedibili legati al commercio online, come ad esempio la competenza del venditore, le conoscenze dell'acquirente sul mercato automobilistico, il luogo in cui viene scambiata l'auto venduta, e altri elementi che fanno oscillare il prezzo di vendita di un'auto e di conseguenza, se non considerati, causano ulteriori imprecisioni nelle predizioni del modello.
 
 
 \subsection{Deployment}
+Una volta giunti alla fase di \textbf{Deployment}, si procede mettendo in funzione l'approccio definito rendendo usabile il modello generato. In altre parole, questa fase vede il passaggio dall'ingegneria del machine learning all'ingegneria del software e all'ingegneria dell'usabilità.
+
+Il modello costruito è reso disponibile attraverso un'App Desktop. L'interfaccia dell'applicazione presenta un form nel quale un utente può inserire le informazioni di un'auto della quale vuole stimare il prezzo. Compilati tutti i campi, l'utente può viualizzare il risultato cliccando su bottone che avvia il processo di predizione del prezzo sulla base dei valore forniti.
+
+A questo link, nella sezione "Guida all'esecuzione", è possibile consultare una guida all'utilizzo dell'applicazione: \textcolor{blue}{\url{https://github.com/ZTunic/AutoMate/blob/main/README.md\#guida-allesecuzione}}.
